@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/api/rpc", "destination": "/api/rpc" },
+    { "source": "/dashboard", "destination": "/public/dashboard.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
