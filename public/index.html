@@ -110,6 +110,15 @@
     clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
   }
   .nav-cta:hover { background: var(--blood) !important; }
+  .nav-buy {
+    color: white !important;
+    background: var(--deep-pink) !important;
+    padding: 5px 16px !important;
+    border: 2px solid var(--blood) !important;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+    transition: background .2s !important;
+  }
+  .nav-buy:hover { background: var(--blood) !important; }
   .nav-dashboard {
     color: var(--pink) !important;
     border: 1px solid rgba(255,110,180,0.35) !important;
@@ -206,7 +215,7 @@
     filter: drop-shadow(0 0 28px rgba(255,0,80,.55)) drop-shadow(0 0 60px rgba(255,110,180,.25));
   }
   .wojak-caption {
-    position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+    position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%);
     font-family: 'Permanent Marker', cursive; font-size: 15px;
     color: var(--pale); opacity: 0.55; white-space: nowrap; letter-spacing: 1px;
   }
@@ -377,12 +386,13 @@
 <nav>
   <div class="logo">$PINK</div>
   <ul>
-    <li><a href="#about">About</a></li>
-    <li><a href="#tokenomics">Tokenomics</a></li>
-    <li><a href="#buy">Buy</a></li>
-    <li><a href="#community">Community</a></li>
+    <li><a href="#about" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'});return false;">About</a></li>
+    <li><a href="#tokenomics" onclick="document.getElementById('tokenomics').scrollIntoView({behavior:'smooth'});return false;">Tokenomics</a></li>
+    <li><a href="#buy" onclick="document.getElementById('buy').scrollIntoView({behavior:'smooth'});return false;">Buy</a></li>
+    <li><a href="#community" onclick="document.getElementById('community').scrollIntoView({behavior:'smooth'});return false;">Community</a></li>
+    <li><a href="/swap" class="nav-buy">PINKSWAP</a></li>
     <li><a href="/dashboard" class="nav-dashboard">SEE THE SAINT</a></li>
-    <li><a href="https://twitter.com" class="nav-cta">Twitter</a></li>
+    <li><a href="https://twitter.com/pinkwojak_" target="_blank" class="nav-cta">Twitter</a></li>
   </ul>
 </nav>
 
@@ -399,8 +409,8 @@
         Buy high, sell low.
       </div>
       <div class="hero-buttons">
-        <a href="#buy" class="btn btn-primary">Buy $PINK</a>
-        <a href="https://twitter.com" class="btn btn-secondary">Twitter / X</a>
+        <a href="/swap" class="btn btn-primary">PinkSwap</a>
+        <a href="https://twitter.com/pinkwojak_" target="_blank" class="btn btn-secondary">Twitter / X</a>
       </div>
     </div>
     <div class="hero-right">
@@ -487,7 +497,7 @@
     </div>
     <div class="contract-box" style="margin-top:40px">
       <div class="contract-label">CA</div>
-      <div class="contract-addr" id="ca-addr">TBA — deploying soon&#8482;</div>
+      <div class="contract-addr" id="ca-addr">HW21LSWZNdRg5KgY26cNMCQTaPiivPX2jSXoB6h2pump&#8482;</div>
       <button class="copy-btn" onclick="copyCA()">COPY</button>
     </div>
   </div>
@@ -515,7 +525,7 @@
       <div class="step-num">03</div>
       <div class="step-content">
         <h3>Swap on Jupiter</h3>
-        <p>Go to <a href="https://jup.ag" target="_blank">jup.ag</a>, paste the $PINK contract address, set slippage 3-5%, and make your most impulsive trade yet.</p>
+        <p>Go to <a href="https://jup.ag/swap/SOL-HW21LSWZNdRg5KgY26cNMCQTaPiivPX2jSXoB6h2pump" target="_blank">jup.ag</a>, paste the $PINK contract address, set slippage 3-5%, and make your most impulsive trade yet.</p>
       </div>
     </div>
     <div class="step">
@@ -535,17 +545,17 @@
     A community of impulsive degens, soy enjoyers, and people who genuinely believe THIS time is different.
   </p>
   <div class="community-links">
-    <a href="https://twitter.com" class="community-card">
+    <a href="https://twitter.com/pinkwojak_" target="_blank" class="community-card">
       <span class="c-icon">&#120143;</span>
       <span class="c-name">Twitter / X</span>
-      <span class="c-sub">@pinkwojakcoin</span>
+      <span class="c-sub">@pinkwojak_</span>
     </a>
-    <a href="https://t.me" class="community-card">
+    <a href="https://t.me/thepinkwojack" target="_blank" class="community-card">
       <span class="c-icon">&#9992;&#65039;</span>
       <span class="c-name">Telegram</span>
       <span class="c-sub">Join the support group</span>
     </a>
-    <a href="https://dexscreener.com" class="community-card">
+    <a href="https://dexscreener.com" target="_blank" class="community-card">
       <span class="c-icon">&#128200;</span>
       <span class="c-name">DexScreener</span>
       <span class="c-sub">Don't look at the chart</span>
