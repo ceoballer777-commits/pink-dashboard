@@ -217,7 +217,7 @@ nav ul li a:hover{opacity:1;color:var(--pink);}
       <!-- CA copy box -->
       <div class="copy-ca" onclick="copyCA()">
         <span class="copy-ca-label">CA</span>
-        <span class="copy-ca-addr" id="ca-display">HW21LSWZNdRg5KgY26cNMCQTaPiivPX2jSXoB6h2pump</span>
+        <span class="copy-ca-addr" id="ca-display"></span>
         <button class="copy-ca-btn" id="ca-btn">COPY</button>
       </div>
     </div>
@@ -255,7 +255,7 @@ nav ul li a:hover{opacity:1;color:var(--pink);}
     <!-- Jupiter renders here -->
     <div id="jupiter-terminal-container"></div>
 
-    <a href="https://jup.ag/swap/SOL-PINK" target="_blank" class="jup-external">
+    <a id="jup-external-link" href="https://jup.ag" target="_blank" class="jup-external">
       OPEN ON JUP.AG INSTEAD ↗
     </a>
   </div>
@@ -274,6 +274,9 @@ for(let i=0;i<24;i++){const d=document.createElement('div');d.className='ra';d.t
 
 // ── PINK CA — update this once deployed ──
 const PINK_CA = 'HW21LSWZNdRg5KgY26cNMCQTaPiivPX2jSXoB6h2pump';  // <-- REPLACE WITH YOUR CA
+
+document.getElementById('ca-display').textContent = PINK_CA;
+document.getElementById('jup-external-link').href = `https://jup.ag/swap/SOL-${PINK_CA}`;
 
 // ── JUPITER TERMINAL INIT ──
 // Runs after the script loads

@@ -503,7 +503,7 @@
 </div>
 <div class="contract-box" style="margin-top:40px">
       <div class="contract-label">CA</div>
-      <div class="contract-addr" id="ca-addr">HW21LSWZNdRg5KgY26cNMCQTaPiivPX2jSXoB6h2pump&#8482;</div>
+      <div class="contract-addr" id="ca-addr"></div>
       <button class="copy-btn" onclick="copyCA()">COPY</button>
     </div>
   </div>
@@ -531,7 +531,7 @@
       <div class="step-num">03</div>
       <div class="step-content">
         <h3>Swap on PinkSwap</h3>
-        <p>Use <a href="/swap" style="color:var(--pink)">PinkSwap</a> — our built-in swap powered by Jupiter. Connect your wallet, enter amount, buy $PINK without leaving the site. Or go directly to <a href="https://jup.ag/swap/SOL-HW21LSWZNdRg5KgY26cNMCQTaPiivPX2jSXoB6h2pump" target="_blank" style="color:var(--pink)">jup.ag</a>.</p>
+        <p>Use <a href="/swap" style="color:var(--pink)">PinkSwap</a> — our built-in swap powered by Jupiter. Connect your wallet, enter amount, buy $PINK without leaving the site. Or go directly to <a id="jup-link" href="https://jup.ag" target="_blank" style="color:var(--pink)">jup.ag</a>.</p>
       </div>
     </div>
     <div class="step">
@@ -576,6 +576,12 @@
 </footer>
 
 <script>
+// ── PINK CA — update this once deployed ──
+const PINK_CA = 'HW21LSWZNdRg5KgY26cNMCQTaPiivPX2jSXoB6h2pump';  // <-- REPLACE WITH YOUR CA
+
+document.getElementById('ca-addr').textContent = PINK_CA + '\u2122';
+document.getElementById('jup-link').href = `https://jup.ag/swap/SOL-${PINK_CA}`;
+
 // Generate falling down arrows
 const bg = document.getElementById('arrows-bg');
 const arrowChars = ['&#8595;','&#8600;','&#8628;','&#9660;','&#11015;'];
