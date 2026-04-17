@@ -119,6 +119,30 @@ nav ul li a:hover{opacity:1;color:var(--pink);}
 }
 .jup-external:hover{opacity:.7;border-color:rgba(255,110,180,.3);}
 
+/* Pump.fun placeholder (shown until Jupiter has a route) */
+.pump-placeholder{
+  width:100%;min-height:420px;
+  border:1px solid var(--border);background:var(--card);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 28px;text-align:center;gap:18px;
+}
+.pump-headline{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--pink);
+  letter-spacing:4px;line-height:1;text-shadow:2px 2px 0 var(--blood);}
+.pump-sub{font-size:13px;color:var(--pale);opacity:.55;letter-spacing:1px;line-height:1.6;max-width:280px;}
+.pump-btn{margin-top:8px;padding:14px 28px;background:var(--deep);color:white;
+  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;
+  text-decoration:none;border:2px solid var(--blood);
+  clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);transition:background .15s;}
+.pump-btn:hover{background:var(--blood);}
+
+/* Route status indicator */
+.route-status{display:inline-flex;align-items:center;gap:6px;margin-top:6px;
+  font-size:11px;letter-spacing:2px;color:var(--pale);opacity:.6;text-transform:uppercase;}
+.route-dot{width:8px;height:8px;border-radius:50%;background:var(--pale);
+  box-shadow:0 0 6px currentColor;animation:rpulse 1.4s ease-in-out infinite;}
+.route-dot.live{background:#00e87a;color:#00e87a;}
+@keyframes rpulse{0%,100%{opacity:.35}50%{opacity:1}}
+
 /* RESPONSIVE */
 @media(max-width:800px){
   .page{grid-template-columns:1fr;gap:32px;}
@@ -250,10 +274,21 @@ nav ul li a:hover{opacity:1;color:var(--pink);}
     <div>
       <div class="swap-frame-title">SWAP FOR $PINK</div>
       <div class="swap-frame-sub">powered by Jupiter · best price on Solana</div>
+      <div class="route-status">
+        <span class="route-dot" id="route-dot"></span>
+        <span id="route-label">Pump.fun</span>
+      </div>
     </div>
 
-    <!-- Jupiter renders here -->
-    <div id="jupiter-terminal-container"></div>
+    <!-- Pump.fun placeholder (default; hidden once Jupiter has a route) -->
+    <div id="pump-placeholder" class="pump-placeholder">
+      <div class="pump-headline">LIQUIDITY INCOMING</div>
+      <div class="pump-sub">Buy on pump.fun until we graduate to Jupiter</div>
+      <a id="pump-link" href="https://pump.fun" target="_blank" class="pump-btn">BUY ON PUMP.FUN ↗</a>
+    </div>
+
+    <!-- Jupiter renders here (hidden until route detected) -->
+    <div id="jupiter-terminal-container" style="display:none"></div>
 
     <a id="jup-external-link" href="https://jup.ag" target="_blank" class="jup-external">
       OPEN ON JUP.AG INSTEAD ↗
@@ -277,35 +312,66 @@ const PINK_CA = 'HW21LSWZNdRg5KgY26cNMCQTaPiivPX2jSXoB6h2pump';  // <-- REPLACE 
 
 document.getElementById('ca-display').textContent = PINK_CA;
 document.getElementById('jup-external-link').href = `https://jup.ag/swap/SOL-${PINK_CA}`;
+document.getElementById('pump-link').href = `https://pump.fun/coin/${PINK_CA}`;
 
-// ── JUPITER TERMINAL INIT ──
-// Runs after the script loads
-window.addEventListener('load', () => {
+// ── ROUTE DETECTION + JUPITER INIT ──
+// Show pump.fun placeholder until Jupiter has a route for the token,
+// then auto-flip to the live Jupiter swap.
+const SOL_MINT = 'So11111111111111111111111111111111111111112';
+let jupiterInited = false;
+let routePoll = null;
+
+function initJupiter(){
+  if(jupiterInited) return;
   if(!window.Jupiter) {
     console.warn('Jupiter Terminal not loaded');
     document.getElementById('jupiter-terminal-container').innerHTML =
       '<div style="display:flex;align-items:center;justify-content:center;height:420px;color:rgba(255,110,180,.3);font-size:13px;letter-spacing:2px;text-align:center;padding:20px;">SWAP LOADING...<br><br><a href="https://jup.ag" target="_blank" style="color:var(--pink);margin-top:10px;display:block;">open jup.ag instead ↗</a></div>';
     return;
   }
-
   window.Jupiter.init({
     displayMode: 'integrated',
     integratedTargetId: 'jupiter-terminal-container',
-    // Use Helius RPC via our proxy so it works
     endpoint: window.location.origin + '/api/rpc',
     formProps: {
-      initialOutputMint: PINK_CA === 'TBA' ? undefined : PINK_CA,
-      fixedOutputMint: PINK_CA !== 'TBA',
-      initialInputMint: 'So11111111111111111111111111111111111111112', // SOL
+      initialOutputMint: PINK_CA,
+      fixedOutputMint: true,
+      initialInputMint: SOL_MINT,
     },
-    // Dark theme to match site
-    containerStyles: {
-      borderRadius: '0px',
-      background: 'rgba(18, 0, 8, 1)',
-    },
+    containerStyles: { borderRadius: '0px', background: 'rgba(18, 0, 8, 1)' },
     defaultExplorer: 'Solscan',
   });
-});
+  jupiterInited = true;
+}
+
+function setRouteLive(){
+  document.getElementById('pump-placeholder').style.display = 'none';
+  document.getElementById('jupiter-terminal-container').style.display = 'block';
+  document.getElementById('route-dot').classList.add('live');
+  document.getElementById('route-label').textContent = 'Jupiter';
+  initJupiter();
+}
+
+async function checkJupiterRoute(){
+  if(PINK_CA === 'TBA') return false;
+  try{
+    const url = `https://quote-api.jup.ag/v6/quote?inputMint=${SOL_MINT}&outputMint=${PINK_CA}&amount=100000000`;
+    const r = await fetch(url);
+    if(!r.ok) return false;
+    const j = await r.json();
+    return Array.isArray(j.routePlan) && j.routePlan.length > 0;
+  } catch(e){ return false; }
+}
+
+async function pollRoute(){
+  if(await checkJupiterRoute()){
+    setRouteLive();
+    if(routePoll){ clearInterval(routePoll); routePoll = null; }
+  }
+}
+
+pollRoute();
+routePoll = setInterval(pollRoute, 30000);
 
 // ── COPY CA ──
 function copyCA(){
